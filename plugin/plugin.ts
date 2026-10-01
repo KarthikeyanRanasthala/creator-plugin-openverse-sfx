@@ -1,20 +1,3 @@
-creator.ui.show();
-
-interface Message {
-  type: string;
-}
-
-creator.ui.onMessage((msg: Message) => {
-  switch (msg.type) {
-    case "get-selected-node": {
-      const layer = creator.selection;
-      const scene = creator.activeScene;
-
-      creator.ui.postMessage({
-        type: "get-selected-node",
-        message: { layer, scene },
-      });
-      break;
-    }
-  }
-});
+// Placeholder sandbox: networking, playback and session state live in the UI.
+// TODO: Audio insertion only when Creator's Plugin API supports it.
+creator.ui.show({ width: 400, height: 640 });

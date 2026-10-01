@@ -5,11 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:ui": "vite --mode standalone",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --experimental-strip-types --test tests/*.test.ts"
   },
   "dependencies": {
+    "@lottiefiles/creator-plugins-ui": "^0.2.2",
+    "lucide-react": "^1.49.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },
