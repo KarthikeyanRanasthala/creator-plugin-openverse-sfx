@@ -1,0 +1,7 @@
+{
+  "id": "e839cffc-9217-4d43-b5d4-95a6a8f418c3",
+  "name": "Openverse SFX",
+  "apiVersion": "1",
+  "entry": "plugin.js",
+  "ui": "ui.html"
+}
