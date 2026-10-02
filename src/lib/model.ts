@@ -1,3 +1,5 @@
+import { AUDIO_FORMATS } from "../../shared/creator.ts";
+
 export const API_BASE = "https://api.openverse.org/v1/";
 export const licenses = [
   ["cc0", "CC0"], ["by", "CC BY"], ["by-sa", "CC BY-SA"], ["pdm", "Public domain"],
@@ -16,7 +18,7 @@ export const usageTypes = [
   ["commercial", "Use commercially"], ["modification", "Modify or adapt"],
   ["all-cc", "Creative Commons only"], ["all", "All license types"],
 ] as const;
-export const extensions = ["mp3", "wav", "ogg", "flac", "opus", "webm", "oga", "mid"];
+export const extensions = AUDIO_FORMATS;
 export const starterSources: Source[] = [
   { source_name: "freesound", display_name: "Freesound", source_url: "https://freesound.org/" },
   { source_name: "jamendo", display_name: "Jamendo", source_url: "https://jamendo.com/" },
@@ -122,10 +124,12 @@ export function serializeSearch({ form: f, page, collection: c }: SearchRequest)
     if (!f.query.trim()) throw new Error("Enter a search or choose a sound category below.");
     set(f.mode === "all" ? "q" : f.mode, f.query.trim());
   }
+  const selectedFormats = [...new Set([...f.extensions, ...f.customExtensions.split(",")].map((s) => s.trim().toLowerCase()).filter(Boolean))];
+  if (selectedFormats.some((format) => !AUDIO_FORMATS.includes(format))) throw new Error("Choose a format Creator supports: MP3, WAV, M4A, FLAC or OGG.");
   for (const [key, values] of [
     ["source", f.sources], ["excluded_source", f.excludedSources], ["license", f.licenses],
     ["license_type", f.usage], ["category", f.categories], ["length", f.lengths],
-    ["extension", [...new Set([...f.extensions, ...f.customExtensions.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean)])]],
+    ["extension", selectedFormats.length ? selectedFormats : AUDIO_FORMATS],
   ] as [string, string[]][]) set(key, values.join(","));
   p.set("filter_dead", String(f.filterDead));
   // The live API rejects these two parameter names together, even if both are false.

@@ -152,3 +152,83 @@ Use the documented Freesound-focused plugin layout for the UI implementation whe
 - This checkpoint includes the audio explorer, anonymous API client, host compatibility fallbacks, session features, tests, product documentation, and Creator preview screenshot.
 - Build, lint, and all 11 tests passed during implementation; the pre-commit whitespace check also passed. No application code changed for this checkpoint.
 - Creator sandbox remains a placeholder. This is a local Git commit; no remote publishing is included.
+
+## 2026-10-02 — Native Creator audio API integration
+
+- User explicitly authorized inspecting the audio API PR worktree, replacing the placeholder sandbox, completing deferred host features, testing in local Creator, and saving a verification video to disk.
+- Reviewed public API declarations, audio import/asset/layer proxies, timing tests, import validation, client storage and sandbox permissions at Creator revision `d47ed7a45`. Audio supports MP3/WAV/M4A/FLAC/OGG up to 20 MB, volume 0–100%, mute, frame timing and animated volume.
+- Started only the requested Creator app dev task from its workspace root; reused the already-running Caddy rather than interrupting unrelated processes. HTTPS has an expired certificate; using the loopback HTTP dev endpoint without changing certificate trust.
+- Implemented request/reply bridge, Add to scene dialog, source trimming, placement, fades, opt-in scene extension, layer attribution, host link opening, and persisted saved library. Public clipboard/download limitations remain.
+- Copied the branch's public generated type package unchanged to a local vendor dependency for reproducible unreleased-API typing. No Creator source files were modified.
+- Verification and saved video results are recorded below.
+
+- Local live app starts in guest mode with a fresh 512×512, 5-second, 30 fps scene. Its dev-loader feature flag was off, so a temporary Vite transform in `/private/tmp/openverse-creator-audio-verify.mts` enables only the development plugin-loader UI. Creator source and audio API remain unchanged; Openverse requests are live, not mocked.
+- First actual import passed: Deep Whoosh #1 MP3, source 0.5–2.5 seconds, inserted at frame 60 (2 seconds), volume 65% confirmed in native Properties, attribution confirmed through layer data.
+- Fixed capability detection: Creator change events do not emit on subscription, so successful host validation of the audio event enables Add even in an empty scene.
+- Creator’s public API has no batch/transaction history control. Import plus subsequent setters produce multiple native Undo steps; this limitation is now documented.
+- Native macOS window recording works. The delivered video will be cropped to Creator content and contain no microphone capture.
+
+### Final implementation and verification
+
+- Moved storage write ordering to the UI and awaited each native clientStorage write directly. The sandbox Promise queue previously wrote data but failed to acknowledge promptly in the live runtime; the final implementation visibly acknowledges saves and restores both sounds and searches after reload. Storage requests use a 30-second timeout.
+- Audio imports are serialized and validate files/options. Capture the target scene, playhead and FPS before import; reject changed targets, use decoded duration, quantize source/placement to frames, and clean up owned assets on configuration failure while preserving pre-existing shared assets. Import remains disabled while a native request is running.
+- Store UTF-8 bounded provenance in layer data. Layer naming avoids renaming shared audio assets; older hosts retain discovery without audio actions. Host links use the public openLink API. Clipboard and export/download fallbacks remain selectable text/JSON/URLs.
+- Final live recorded import: “Deep Whoosh #1” (Kinoton, Freesound, CC0 1.0), MP3, source 0.50–3.00 seconds, placement 3.00–5.50 seconds, 65% volume, initially muted, 0.20-second fade-in and 0.30-second fade-out. Native layer selection, volume keyframes and waveform appeared correctly.
+- Native Properties confirmed 0% at the fade-in start and 65% in the middle. Unmuted the layer, used native Undo to restore mute, then Redo to unmute. Timeline playback progressed with a nonzero scene audio meter (observed −34.3 dBFS). The final layer is unmuted.
+- Opt-in scene extension was confirmed in native scene Properties: `00:05:15` at 30 fps, or 5.50 seconds, from the original 5.00 seconds. Layer attribution reports matching placement/source offset and the API's original attribution.
+- Saved one sound and one Freesound whoosh search, confirmed the saved status, reloaded the plugin, and restored both. JSON export includes both without waveform samples. Clicking License terms through the host opened the CC0 deed in a new Chrome tab.
+- Build, ESLint and all 20 tests passed. Nine new tests exercise fractional FPS/source offsets, import validation/configuration, failed-import cleanup, existing-asset preservation, scene extension/change detection, concurrent imports, storage validation and bounded provenance. No live Openverse reports were submitted.
+- Saved `docs/videos/openverse-creator-audio-flow.mp4`: 240 seconds, H.264, 1728 × 940, 30 fps, approximately 3.7 MB, silent. Native Chrome window recording was cropped to the Creator content area. Checked encoded metadata and extracted frames to verify layout, import success and export/restoration views. Intermediate debug recordings were not included in the repository.
+- Saved `docs/screenshots/creator-audio-integration.jpg` showing the real selected layer, native 65% volume, timeline fades and saved provenance/timing.
+- Creator worktree `git status --short` is empty. Local Creator and plugin servers remain running for review. Current plugin changes are uncommitted; no remote publishing occurred.
+
+### Remaining host/provider boundaries
+
+- Import configuration comprises individual native history operations; the public API exposes no transaction/batch operation. A complete import rollback may require multiple Undo steps.
+- Direct downloads and native clipboard writes remain unavailable in the public script-only iframe. Selectable text/URL/JSON fallbacks continue to work.
+- Provider availability/CORS and codec support can fail independently. Imports are limited to supported formats and 20 MB. Saved library scope follows this browser, Creator user and stable plugin manifest ID; standalone and recent-listening choices remain session-only.
+- Local HTTPS had an expired certificate. Verification used loopback HTTP without changing trust settings. Only the development loader UI was enabled through a temporary external Vite transform; the audio API and live Openverse requests were unchanged.
+
+## 2026-10-02 — Simplify the plugin after product review
+
+### User decision and reduced scope
+
+- User identified inconsistent select corners/chevron padding, distracting focus rings, missing home navigation and excessive app-like features. Explicitly approved Search → Preview → Add, saved sounds and basic filters.
+- This supersedes the initial full-API-controls requirement. Rewrote the current PRD around the accepted reduced product; historical scope and evidence remain in this worklog.
+- Removed UI for reports, saved searches, JSON import/export, recent listening, collection/source inventory browsing, combined-field search, advanced API controls, related sounds, artwork/raw metadata and direct file downloads.
+- Kept source choice, four simple search modes, usage/duration/format/license filters, sort, load more, shared preview player, favorites, compact details, attribution and native Add.
+- Simplified Add to available file, playhead/start placement and opt-in scene extension. Full-file imports use 100% volume, unmuted and no fades. Trim/mix/fades are edited in Creator. Tested runtime validation remains available internally.
+
+### Storage, formats and UI fixes
+
+- Confirmed Creator clientStorage is backed by IndexedDB (`creator-plugins` / `client-storage`), scoped by user and plugin ID, with browser-local persistence. It is not the iframe's localStorage and does not sync across devices. Existing legacy saved-search records are retained when saving favorites, without exposing search-saving UI.
+- JSON import/export previously handled this plugin's own version-1 backups. It did not import collections exported by Openverse; both controls are now removed.
+- Confirmed the branch's supported audio formats from `lib/audio-format.ts`: MP3, WAV, M4A, FLAC and OGG. Filter choices now include only those formats; no custom unsupported extensions. Normal searches include all five by default, and unsupported format requests are rejected before fetching.
+- Kept the existing typed fetch cache/deduplication/timeout/cooldown implementation. TanStack Query is not installed; this was answered as a question, not treated as a migration request.
+- Made native selects consistently styled with `appearance: none`, 6 px radius, visible rounded surfaces and a custom chevron with right padding. Removed focus outlines/shadows, including waveform rings, at the user's request. Keyboard activation and accessible labels remain.
+- Added a labeled home action from results/details/Saved. It clears query/filters while retaining the source and advances the request generation so a late response cannot replace the homepage.
+- Found the dialog's animated 16 px close target could move during a quick click. Removed dialog movement and enlarged the close target to 28 × 28 px. Retested rapid opening/closing of selected-layer attribution successfully.
+
+### Verification and artifacts
+
+- Live local Creator checks: 400 × 640 panel, scroll width 400; no horizontal overflow. Select computed radius 6 px, right padding 24 px for source, 27 px for mode/sort, 30 px for Add fields, and chevron inset 10 px. Keyboard-focused search action reports no outline or box shadow.
+- Live Freesound whoosh: 240 results for all supported formats; 163 for MP3. Applied format filter, returned home, confirmed ideas/query/filter reset and searched again. Preview reached 3.1 seconds of the 3.2-second file.
+- Saved “Deep Whoosh #1”, confirmed acknowledged saved status, reloaded the plugin and restored it in the simplified Saved view.
+- Imported the full MP3 at the current 2.13-second playhead. Native Properties confirmed 100% volume and unmuted state, with no fade configuration. Existing Impact layer was preserved. Scene playback advanced and produced a nonzero meter signal (observed −58.6 dBFS late in the clip); imported-layer attribution was restored from native plugin data.
+- Production build and ESLint pass; all 21 tests pass. The added format-policy test verifies default supported formats, a selected supported subset and rejection of OPUS/WEBM/OGA/MID/AIFF. Rebuilt/re-linted after the final dialog styling correction.
+- Saved `docs/videos/openverse-simplified-flow.mp4`: 195 seconds, silent H.264, 1728 × 940, 30 fps, approximately 2.85 MB. Combines the real discovery/import/playback flow and a separate saved-sound reload/attribution verification segment. Crop and encoded frames checked. The earlier four-minute video is retained as evidence of the previous expanded UI.
+- Saved `docs/screenshots/creator-simplified-plugin.jpg` and `docs/screenshots/creator-simple-add.jpg` for the current interface. README/PRD now describe the reduced scope and distinguish older recording coverage.
+- The supplied Creator worktree remains clean. Plugin changes remain uncommitted and both local servers are left running for review; nothing was published.
+
+## 2026-10-02 — Remove connection text and explain attribution
+
+- Removed “Creator audio connected” and the conditional footer status; retained only “Powered by Openverse”. Removed the unused status styling.
+- Traced attribution: prefer Openverse's `attribution` field, otherwise assemble a labeled metadata fallback. Import stores bounded provenance on the audio layer under the `openverse` plugin-data key. Selection reads that stored metadata from the first selected audio layer; it does not infer provenance from audio content or names. Other audio layers without this data do not show the attribution action.
+- Updated the PRD with the footer requirement and attribution behavior. Production build and live footer verification are recorded below.
+- Production build passed. Live Creator footer contains only “Powered by Openverse”. Saved `docs/screenshots/creator-footer.jpg` and refreshed the main plugin screenshot. No attribution code was changed.
+
+## 2026-10-02 — Commit checkpoint
+
+- User requested a commit of the completed native Creator audio integration, simplified Search → Preview → Add interface, footer cleanup, documentation and verification artifacts.
+- Reviewed the changed-file scope and confirmed `git diff --check` passes. Existing validation includes 21 passing tests, ESLint, production builds and recorded live Creator flows; the final footer-only change was rebuilt and visually verified.
+- Included the vendored public audio API declarations, screenshots and both flow recordings in this local checkpoint. Nothing was published.

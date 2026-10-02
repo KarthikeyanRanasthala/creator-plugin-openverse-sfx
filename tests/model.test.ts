@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { defaultForm, normalizeAudio, safeUrl, serializeSearch, time, readForm } from "../src/lib/model.ts";
 import { readSession } from "../src/lib/session.ts";
+import { AUDIO_FORMATS } from "../shared/creator.ts";
 const id = "eab8a6e2-0ac8-4615-9e0d-ebde30523783";
 test("general search omits incompatible field terms and encodes user queries", () => {
   const p = serializeSearch({ form: { ...defaultForm, query: "wind & rain", creator: "ignored", title: "ignored" }, page: 1 });
@@ -11,6 +12,15 @@ test("general search omits incompatible field terms and encodes user queries", (
   assert.equal(p.has("title"), false);
   assert.equal(p.has("unstable__sort_dir"), false);
   assert.equal(p.has("unstable__include_sensitive_results"), false);
+  assert.equal(p.get("extension"), AUDIO_FORMATS.join(","));
+});
+test("format filtering allows only Creator formats and defaults to all supported formats", () => {
+  const form = { ...defaultForm, query: "whoosh" };
+  assert.equal(serializeSearch({ form: { ...form, extensions: ["m4a", "wav"] }, page: 1 }).get("extension"), "m4a,wav");
+  for (const format of ["opus", "webm", "oga", "mid", "aiff"]) {
+    assert.throws(() => serializeSearch({ form: { ...form, extensions: [format] }, page: 1 }), /Creator supports/);
+    assert.throws(() => serializeSearch({ form: { ...form, customExtensions: format }, page: 1 }), /Creator supports/);
+  }
 });
 test("independent specific fields never send q", () => {
   const p = serializeSearch({ form: { ...defaultForm, mode: "fields", query: "ignored", title: "water", creator: "a name", tags: "rain" }, page: 1 });

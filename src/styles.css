@@ -22,9 +22,10 @@ button, input, select, textarea { font: inherit; }
 button, select { cursor: pointer; }
 button:disabled, select:disabled { cursor: default; opacity: .45; }
 button, a, input, select, textarea, summary { -webkit-tap-highlight-color: transparent; }
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+button:focus, a:focus, input:focus, select:focus, textarea:focus, summary:focus,
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: none !important; box-shadow: none !important; }
 button { transition: background .12s, color .12s, border-color .12s; }
-select { min-width: 0; color: var(--foreground); background: #25282e; border: 1px solid var(--border); border-radius: 5px; padding: 6px 8px; max-width: 100%; }
+select { min-width: 0; color: var(--foreground); background-color: #25282e; border: 1px solid var(--border); border-radius: 6px; padding: 6px 30px 6px 9px; max-width: 100%; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ba1ad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
 option { background: #25282e; color: var(--foreground); }
 textarea { width: 100%; background: #202227; color: var(--foreground); border: 1px solid var(--border); padding: 8px; border-radius: 5px; resize: vertical; }
 input[type=checkbox] { accent-color: var(--primary); width: 13px; height: 13px; flex-shrink: 0; margin: 2px 0 0; }
@@ -40,6 +41,7 @@ svg { flex-shrink: 0; }
 .brand h1 { font-size: 14px; font-weight: 650; letter-spacing: -.25px; }
 .brand h1 span { font-weight: 450; color: #c0c5ce; margin-left: 2px; }
 .brand-caption { font-size: 10px; color: var(--muted-foreground); }
+.header-actions { display: flex; gap: 3px; align-items: center; }
 .icon-button { width: 27px; height: 27px; min-width: 27px; padding: 0; color: #a4aab5; border-radius: 5px; }
 .icon-button:hover { color: var(--foreground); background: #30343b; }
 .icon-button.saved, .icon-button.selected { color: var(--primary); }
@@ -49,21 +51,21 @@ svg { flex-shrink: 0; }
 .tab-count, .filter-count { font-size: 9px; background: #344c43; color: var(--primary); padding: 0 5px; border-radius: 4px; }
 .source-picker { margin-left: auto; display: flex; align-items: center; gap: 4px; min-width: 0; }
 .source-dot, .status-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--primary); flex-shrink: 0; }
-.source-picker select { background: transparent; border: 0; padding: 3px 1px; appearance: none; font-size: 10px; color: #b4bac4; width: auto; max-width: 115px; text-overflow: ellipsis; }
+.source-picker select { padding: 4px 24px 4px 7px; background-position: right 7px center; font-size: 10px; color: #b4bac4; width: auto; max-width: 125px; text-overflow: ellipsis; }
 .search-area { padding: 14px 16px 12px; border-bottom: 1px solid #2e3137; flex-shrink: 0; }
 .search-box { display: flex; align-items: center; gap: 8px; background: #24272d; border: 1px solid #393d45; padding: 0 9px; border-radius: 6px; height: 36px; color: #959daa; }
-.search-box:focus-within { border-color: #6ab4a4; box-shadow: 0 0 0 1px #6ab4a425; }
+.search-box:focus-within { border-color: #58635f; }
 .search-box input { border: 0; outline: 0 !important; box-shadow: none !important; background: transparent; padding: 0; height: 34px; font-size: 12px; color: var(--foreground); flex: 1; min-width: 0; }
 .search-box input::placeholder { color: #818995; }
 .search-box button { background: #333a3e; color: #c7d4d1; width: 23px; height: 23px; border: 0; border-radius: 4px; display: grid; place-items: center; }
 .search-box button:hover { background: #37554b; color: var(--primary); }
 .search-options { display: flex; align-items: center; justify-content: space-between; margin: 5px 0 9px; }
-.search-options select { border: 0; background: transparent; color: #929aa7; padding: 0; font-size: 10px; }
+.search-options select { color: #a2a9b5; padding: 4px 27px 4px 7px; font-size: 10px; }
 .external-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; overflow-wrap: anywhere; }
 .search-options .external-link { font-size: 10px; color: #838b98; }
 .search-toolbar { display: flex; align-items: center; gap: 8px; }
 .search-toolbar > button { font-size: 11px; height: 27px; }
-.search-toolbar > select { margin-left: auto; background: transparent; border: 0; color: #a2a9b5; padding: 3px 0; font-size: 10px; max-width: 160px; }
+.search-toolbar > select { margin-left: auto; color: #a2a9b5; padding: 5px 27px 5px 8px; font-size: 10px; max-width: 160px; }
 .filter-chips { display: flex; flex-wrap: wrap; gap: 5px; padding-top: 9px; }
 .filter-chips button, .tag { background: #2b3036; color: #bac2cb; border: 1px solid #3a424a; padding: 3px 7px; border-radius: 5px; font-size: 10px; display: inline-flex; align-items: center; gap: 5px; }
 .filter-chips button:hover, .tag:hover { color: var(--primary); border-color: #5b897b; }
@@ -85,7 +87,6 @@ svg { flex-shrink: 0; }
 .start-note svg { margin-top: 1px; color: #789d91; }
 .plugin-status { height: 26px; padding: 0 13px; display: flex; align-items: center; gap: 6px; font-size: 9px; color: #8e97a5; background: #191b1f; border-top: 1px solid #2d3036; flex-shrink: 0; }
 .plugin-status .status-dot { background: #73978b; }
-.status-right { margin-left: auto; color: #808996; }
 .result-heading { padding: 12px 16px 5px; display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: #b1b9c5; }
 .result-heading > span:last-child { font-size: 9px; color: #8d96a4; }
 .audio-row { padding: 12px 16px 9px; border-bottom: 1px solid #2c3036; background: transparent; }
@@ -103,7 +104,7 @@ svg { flex-shrink: 0; }
 .waveform-bars span { background: #6b807b; border-radius: 2px; min-width: 2px; flex: 1; }
 .waveform-bars span.played { background: #78e1c8; }
 .waveform input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; z-index: 1; }
-.waveform:focus-within { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 3px; }
+.waveform:focus-within { outline: none; }
 .waveform-bars .waveform-line { flex: 1; height: 2px; opacity: .45; }
 .time { font-size: 10px; font-variant-numeric: tabular-nums; color: #a8b2be; white-space: nowrap; }
 .row-meta { display: flex; align-items: center; gap: 7px; padding-left: 38px; margin-top: 3px; font-size: 9px; color: #9ba5b4; }
@@ -124,7 +125,10 @@ svg { flex-shrink: 0; }
 .player-seek .volume-slider { flex: 0 0 45px; width: 45px; margin-left: 4px; }
 .player-error { color: #ecc6a1; font-size: 10px; margin-top: 7px; }
 .plugin-dialog { width: min(380px, calc(100vw - 24px)); max-width: 380px; max-height: min(620px, calc(100dvh - 24px)); display: flex; flex-direction: column; background: #24272d; color: var(--foreground); border: 1px solid #444952; border-radius: 9px; padding: 16px; overflow-y: auto; font-size: 12px; box-shadow: 0 15px 60px #0009; }
+.plugin-dialog { animation: none !important; }
+.plugin-dialog > button:last-child { width: 28px; height: 28px; top: 8px; right: 8px; display: grid; place-items: center; }
 .dialog-heading { padding-bottom: 12px; flex-shrink: 0; }
+.dialog-heading { padding-right: 22px; }
 .dialog-heading h2 { font-size: 14px; font-weight: 600; }
 .dialog-heading p { color: #a4adba; font-size: 11px; line-height: 1.5; margin-top: 5px; }
 .split { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -252,3 +256,7 @@ svg { flex-shrink: 0; }
 
 .session-json { font-family: ui-monospace, monospace; font-size: 10px; min-height: 160px; width: 100%; resize: vertical; }
 .import-field { margin-top: 14px; }
+
+.add-to-scene { width: 100%; margin: 4px 0 12px; }
+.scene-audio-link { display:flex; gap:8px; align-items:center; padding:8px 14px; border-top:1px solid var(--border); color:var(--muted-foreground); font-size:11px; text-align:left; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; flex-shrink:0; }
+.scene-audio-link span { margin-left:auto; color:#66dfc8; flex-shrink:0; }

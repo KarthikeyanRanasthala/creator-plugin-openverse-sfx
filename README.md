@@ -1,6 +1,6 @@
 # Openverse Sounds
 
-A dark, client-only audio explorer for LottieFiles Creator. Starts with Freesound and leaves category filtering unset, because many sound effects have incomplete category metadata.
+A compact dark, client-only audio plugin for LottieFiles Creator: search, preview, save sounds and add them to your scene. Freesound is selected by default.
 
 ## Run locally
 
@@ -11,28 +11,28 @@ npm install
 npm run dev:ui -- --port 5173 --strictPort
 ```
 
-Open http://127.0.0.1:5173/ for the standalone preview. In https://creator.lottiefiles.com/, open Plugins, click the **+**, choose **Develop**, and enter `http://127.0.0.1:5173`. This route was verified in Creator. The server binds only to loopback.
+Open `http://127.0.0.1:5173/` for a standalone preview. In Creator, open Plugins, click **+**, choose **Develop** and enter `http://127.0.0.1:5173`. The server binds to loopback. `npm run dev` retains the template HTTPS/mkcert workflow; `dev:ui` avoids certificate installation.
 
-`npm run dev` retains the template's HTTPS/mkcert workflow for environments with local certificate trust already configured. `dev:ui` avoids certificate installation.
+## Scope
 
-## Features
+- Search all fields, title, creator or tags; source picker and sound ideas.
+- Basic usage, duration, license and Creator-compatible format filters; relevance/index-date sort and load more.
+- Waveform rows and one persistent preview player with seek, volume, mute and loop.
+- Compact details, original-source/license links and attribution.
+- Saved sounds through Creator clientStorage, backed by browser-local IndexedDB. Standalone favorites are session-only.
+- Native Add with available file, playhead/start placement and optional scene extension. Trim, volume and fades are edited in Creator.
 
-- General, title, creator, tag, and combined-field search; sound-oriented starting queries.
-- Every audio search parameter from the supplied OpenAPI spec, including licenses, usage, categories, duration, formats, source inclusion/exclusion, content flags, experimental ranking and collections.
-- Waveform rows and one persistent preview player with seek, volume, mute, and loop.
-- Details, attribution, alternate files, artwork size/compression, related sounds, provider counts, and explicit reports.
-- Session-only saved sounds, saved searches, and listening history; JSON export and file/paste import.
-- Cached and deduplicated anonymous requests, bounded pagination, validation errors, timeouts, and rate-limit cooldowns.
+Reports, saved searches, JSON import/export, collections, advanced API tools and insertion editing controls have been removed from the interface. Existing legacy saved-search records are retained in storage for compatibility.
 
-## Runtime boundaries
+## Runtime
 
-All requests and playback run in the React UI. There are no API keys, auth headers, server services, or persistent browser storage. `plugin/plugin.ts` only opens a 400 × 640 panel and contains a future audio-insertion placeholder; it builds to the placeholder `plugin.js`.
+Anonymous requests and previews run in React without keys, auth or a backend. A custom fetch client handles caching, deduplication, timeouts and throttling; TanStack Query is not used.
 
-Creator currently uses a script-only iframe. Search and playback work there. External links/downloads offer selectable URLs, clipboard actions offer selectable text, and export offers selectable JSON. Standalone mode opens links normally and attempts eligible downloads through CORS-enabled fetch-to-blob. Some original files require a provider account. Saved items disappear on close/reload unless exported. Development reloads also reset the session.
+The sandbox bridge performs native audio import, attribution, storage and public link opening. Creator downloads the audio URL. MP3/WAV/M4A/FLAC/OGG are supported up to 20 MB; search requests are limited to these formats by default. Providers may block access or require accounts for originals. Clipboard fallback supplies selectable text.
 
-Anonymous page size is capped at 20, verified against the API. Mature and experimental sensitive-result parameters are mutually exclusive, including when set to false. Category metadata and experimental API behavior can be incomplete or change. Reports are sent only when the user explicitly submits; automated verification uses a mocked endpoint.
+Native Add requires the supplied Creator audio API branch at revision `d47ed7a45`. Its unmodified public declarations are pinned in `vendor/creator-api-types` until published. Older hosts retain discovery. Keep the plugin manifest ID stable. Native import/configuration can require multiple Undo steps because the API has no history transaction.
 
-## Check and build
+## Verification and build
 
 ```sh
 npm test
@@ -40,6 +40,10 @@ npm run lint
 npm run build
 ```
 
-The Creator Vite plugin produces `dist/ui.html`, `dist/plugin.js`, and `dist/manifest.json`. The production UI is static and needs no backend.
+Production output: `dist/ui.html`, `dist/plugin.js` and `dist/manifest.json`. Build, lint and 21 tests passed. Live local Creator verification covers supported-format search, home navigation, select/focus styling, preview, simplified import, native playback, attribution and saved-sound restoration.
 
-`PRD.MD` tracks product requirements and API coverage. `WORKLOG.MD` records decisions, implementation, verification, and remaining limitations.
+[Watch the updated simplified flow](docs/videos/openverse-simplified-flow.mp4) (silent). [View the plugin](docs/screenshots/creator-simplified-plugin.jpg) or [the smaller Add dialog](docs/screenshots/creator-simple-add.jpg). The earlier [audio API walkthrough](docs/videos/openverse-creator-audio-flow.mp4) shows the previous expanded interface and native editing checks.
+
+Local Creator runs at `http://127.0.0.1:3000/` using `/private/tmp/openverse-creator-audio-verify.mts` to expose its development loader. That temporary config changes no audio implementation and is unnecessary when the loader is already enabled. The supplied Creator worktree remains unchanged.
+
+`PRD.MD` records current product scope. `WORKLOG.MD` records decisions, changes and verification history.

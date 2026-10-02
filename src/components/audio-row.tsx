@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Bookmark, Pause, Play, LoaderCircle, ChevronRight, Volume2, Repeat2, X } from "lucide-react";
+import { Bookmark, Pause, Play, LoaderCircle, ChevronRight, Volume2, Repeat2, X, Plus } from "lucide-react";
 import { getPeaks, licenseName, safeUrl, sourceName, time, titleOf } from "../lib/model.ts";
 import type { Audio } from "../lib/model.ts";
 import type { Player } from "../lib/use-player.ts";
@@ -19,7 +19,7 @@ export function Waveform({ peaks, progress = 0, onSeek, label = "Seek audio", du
     {onSeek && <input type="range" aria-label={label} min={0} max={1000} value={Math.round(Math.min(1, progress) * 1000)} aria-valuetext={time(progress * duration)} onChange={(e) => onSeek(Number(e.target.value) / 1000)} />}
   </div>;
 }
-export function AudioRow({ audio, player, saved, onSave, onDetails, showSource = false }: { audio: Audio; player: Player; saved: boolean; onSave: (a: Audio) => void; onDetails: (a: Audio) => void; showSource?: boolean }) {
+export function AudioRow({ audio, player, saved, onSave, onDetails, showSource = false, onAdd }: { audio: Audio; player: Player; saved: boolean; onSave: (a: Audio) => void; onDetails: (a: Audio) => void; showSource?: boolean; onAdd?: (a: Audio) => void }) {
   const active = player.current?.id === audio.id;
   const peaks = active ? getPeaks(player.current!) : getPeaks(audio);
   const seconds = active ? player.duration : (audio.duration || 0) / 1000;
@@ -30,6 +30,7 @@ export function AudioRow({ audio, player, saved, onSave, onDetails, showSource =
       </IconButton>
       <button className="track-name" onClick={() => onDetails(audio)} title={titleOf(audio)}><strong>{titleOf(audio)}</strong><span>{audio.creator || "Unknown creator"}{showSource ? " · " + sourceName(audio.source) : ""}</span></button>
       <IconButton label={(saved ? "Unsave " : "Save ") + titleOf(audio)} aria-pressed={saved} className={saved ? "saved" : ""} onClick={() => onSave(audio)}><Bookmark size={15} fill={saved ? "currentColor" : "none"} /></IconButton>
+      {onAdd && <IconButton label={"Add " + titleOf(audio) + " to scene"} onClick={() => onAdd(audio)}><Plus size={15} /></IconButton>}
     </div>
     <div className="row-wave"><Waveform peaks={peaks} progress={active && seconds ? player.position / seconds : 0} duration={seconds} onSeek={seconds > 0 && safeUrl(audio.url) ? (f) => player.select(audio, active ? player.source() : audio.url, f * seconds, true) : undefined} label={"Seek " + titleOf(audio)} /><span className="time">{time(audio.duration == null ? null : audio.duration / 1000)}</span></div>
     <div className="row-meta"><span className={"license-badge " + (audio.license === "cc0" || audio.license === "pdm" ? "open-license" : "")}>{licenseName(audio.license)}</span>{audio.filetype && <span>{audio.filetype.toUpperCase()}</span>}{(audio.mature || audio.unstable__sensitivity?.length) ? <span className="sensitive-badge">Sensitive</span> : null}<button className="details-link" onClick={() => onDetails(audio)}>Details<ChevronRight size={11} /></button></div>

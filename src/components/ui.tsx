@@ -4,6 +4,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { useState } from "react";
 import { safeUrl } from "../lib/model.ts";
 import { isEmbeddedPanel } from "../lib/browser.ts";
+import { creatorConnected, creatorRequest } from "../lib/creator.ts";
 
 export function IconButton({ label, children, className = "", ...props }: ComponentProps<typeof Button> & { label: string }) {
   return <Button type="button" variant="ghost" size="icon" className={"icon-button " + className} title={label} aria-label={label} {...props}>{children}</Button>;
@@ -37,7 +38,7 @@ export function External({ href, children, className = "" }: { href?: string | n
   const [showLink, setShowLink] = useState(false);
   const url = safeUrl(href);
   return url ? <><a href={url} target="_blank" rel="noopener noreferrer" className={"external-link " + className} onClick={(event) => {
-    if (isEmbeddedPanel()) { event.preventDefault(); setShowLink(true); }
+    if (isEmbeddedPanel()) { event.preventDefault(); if (creatorConnected()) void creatorRequest("link", url).catch(() => setShowLink(true)); else setShowLink(true); }
   }}>{children}<ExternalLink size={12} /></a>{showLink && <LinkDialog url={url} onClose={() => setShowLink(false)} />}</> : null;
 }
 export function LinkDialog({ url, onClose }: { url: string; onClose: () => void }) {
