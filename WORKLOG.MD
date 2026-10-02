@@ -232,3 +232,9 @@ Use the documented Freesound-focused plugin layout for the UI implementation whe
 - User requested a commit of the completed native Creator audio integration, simplified Search → Preview → Add interface, footer cleanup, documentation and verification artifacts.
 - Reviewed the changed-file scope and confirmed `git diff --check` passes. Existing validation includes 21 passing tests, ESLint, production builds and recorded live Creator flows; the final footer-only change was rebuilt and visually verified.
 - Included the vendored public audio API declarations, screenshots and both flow recordings in this local checkpoint. Nothing was published.
+
+## 2026-10-02 — Public GitHub repository
+
+- User requested a new public repository named `creator-plugin-openverse-sfx` and confirmed `KarthikeyanRanasthala` as the owner.
+- Publication target: `https://github.com/KarthikeyanRanasthala/creator-plugin-openverse-sfx`, with `origin` configured for the existing repository and `main` carrying the committed implementation, documentation and verification artifacts.
+- This publication checkpoint makes no runtime or product changes.
