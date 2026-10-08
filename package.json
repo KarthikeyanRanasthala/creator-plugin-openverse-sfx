@@ -1,7 +1,18 @@
 {
   "name": "openverse-sfx",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Find, preview, and add Openverse sound effects in LottieFiles Creator.",
+  "license": "MIT",
+  "author": "Karthikeyan Ranasthala",
+  "homepage": "https://extensions.lottiefiles.com/plugin/karthikeyan-ranasthala/openverse-sfx",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KarthikeyanRanasthala/creator-plugin-openverse-sfx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KarthikeyanRanasthala/creator-plugin-openverse-sfx/issues"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",

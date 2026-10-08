@@ -264,3 +264,46 @@ Use the documented Freesound-focused plugin layout for the UI implementation whe
 - User requested committing and pushing the completed npm types migration, documentation and live verification screenshots to `origin/main`.
 - Reviewed the full change scope and confirmed `git diff --check` passes. Existing validation includes TypeScript, production build, ESLint, all 21 tests and the successful production Creator flow recorded above.
 - Clarified in README that the earlier local Creator setup was historical; the current verification requires no external checkout or host override.
+
+
+## 2026-10-08 — Marketplace release preparation
+
+- User requested publisher signup and publication at `extensions.lottiefiles.com` using existing Chrome. Resumed after a connection interruption, using the current personal-account publisher named Karthikeyan Ranasthala (`karthikeyan-ranasthala`). Saved the user-provided personal contact email in the portal; contact email is intentionally omitted from repository documentation.
+- Added manifest version `1.0.0` without changing the plugin ID. Production build/type-check passed. Prepared the release archive containing root-level manifest, sandbox script, bundled UI and third-party notices for all 24 runtime dependency versions; ZIP integrity passed (229,503 bytes).
+- Prepared marketplace listing copy, a 512 px waveform icon, a transparent monochrome sidebar SVG and three live Creator gallery screenshots. The listing documents anonymous Openverse requests, provider file requests, browser-local saved sounds, layer provenance and provider/codec limitations.
+- Automatic upload review initially blocked the gallery because screenshot privacy was unknown. Visually inspected all three and confirmed blank test-scene/public sound content and that the exact files are already tracked in the pushed public repository. Retrying after these checks succeeded.
+- Publisher settings are saved. Plugin listing and release submission remain in progress; no publication claimed yet.
+
+### Submission outcome
+
+- Saved the completed Openverse SFX listing under the current personal publisher. Portal plugin ID: `6275f427-b675-452b-be37-ee2839d5163b`; publisher ID: `01452372-3dd9-4c4e-962d-428d539fd580`. The plugin's own manifest ID remains unchanged.
+- Uploaded and created release `1.0.0`, then submitted it for review. The portal advanced through Validation and Auto Review to **Manual review**. No publisher action is available until the marketplace review completes; the asset is still a draft and is not public/installable yet.
+- Portal bundle hash matches the local ZIP exactly: `28f91c3fa2bbb75ec5b7432878d1bc2885af8d90b2126367572c88776ff7be05`.
+- Review dashboard: https://extensions.lottiefiles.com/publisher/plugins/6275f427-b675-452b-be37-ee2839d5163b?publisherId=01452372-3dd9-4c4e-962d-428d539fd580
+- Saved proof to `docs/screenshots/creator-extensions-manual-review.jpg` and left the browser on the expanded release pipeline. Marketplace approval/publication remains pending external review.
+
+## 2026-10-08 — User-focused marketplace copy
+
+- User pointed out that Creator audio API and npm type-package details do not help external plugin users. Rewrote the marketplace short/long descriptions around finding, previewing, saving and adding sounds; removed API names, package versions, CORS terminology and implementation architecture.
+- Kept useful format/size limits, license guidance, browser-local favorites and a short plain-language disclosure about Openverse/provider requests and analytics.
+- Saved both descriptions in the portal and verified its “All changes saved” status. Captured `docs/screenshots/creator-extensions-user-copy.jpg` as proof.
+- Prepared feature-focused first-release notes and changelog in `docs/marketplace/LISTING.MD`. Inspected the expanded submitted `1.0.0` release: it remains in Manual review and offers no metadata editing or withdrawal controls. Its original release notes/changelog remain in the portal; revised copy is ready locally. No replacement release or duplicate submission was created.
+- Updated the PRD with the user-facing copy requirement. No plugin runtime or release-bundle changes were needed.
+
+## 2026-10-08 — Approval and public marketplace verification
+
+- User reported the approval email and requested another check for metadata editing. Refreshed the portal and verified release `1.0.0` is Approved and the plugin status is Published; no further publishing action was necessary.
+- Inspected the expanded approved release and plugin settings. Listing descriptions remain editable and preserve the user-focused copy. Approved release notes/changelog still expose no edit control; technical text in that immutable release metadata could not be replaced through the portal. The replacement copy remains in `docs/marketplace/LISTING.MD`.
+- The settings “View on marketplace” link points to a nonexistent `/plugins/openverse-sfx` route. Used marketplace search to locate the actual public URL: `https://extensions.lottiefiles.com/plugin/karthikeyan-ranasthala/openverse-sfx`.
+- Verified the public page shows the revised About description, version `1.0.0`, the three screenshots, source/support links and Open in Creator. Its “New in version” section still displays the original submitted release notes.
+- Saved `docs/screenshots/creator-extensions-approved.jpg` and `creator-extensions-published.jpg`. Updated README/PRD/listing status with the live URL. No new bundle or duplicate release was created.
+
+## 2026-10-08 — Open-source repository documentation
+
+- User requested making the public repository open source, improving its README and supporting documentation, linking the published extension and updating the GitHub description.
+- Added the standard MIT license with Karthikeyan Ranasthala as copyright holder. The license applies to plugin code; discovered audio and third-party dependencies retain their own licenses.
+- Rewrote README around installation, features and the published Creator Extensions link, with a live screenshot and development quick start. Moved architecture and verification details into `docs/DEVELOPMENT.md`.
+- Added CONTRIBUTING, a user-focused CHANGELOG, data/privacy notes and bug/feature/PR templates. Kept technical release notes out of the user-facing changelog. Added license/author/repository/support/homepage package metadata and aligned package/lock versions with the `1.0.0` plugin manifest.
+- Updated GitHub description to “Open-source sound effects plugin for LottieFiles Creator. Search, preview, save, and add sounds from Openverse.” Set the repository homepage to the marketplace listing and added relevant audio/Openverse/Creator topics.
+- Validation: all 21 tests, ESLint and the production TypeScript/Vite build passed. Documentation's local links resolve; version and license metadata match. The preserved approved ZIP retains its original SHA-256. No runtime behavior changed.
+- This checkpoint also includes the marketplace release preparation, public listing records and verification screenshots from the publishing work above.

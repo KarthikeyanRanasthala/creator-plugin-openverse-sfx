@@ -109,3 +109,25 @@ Freesound is a starting pool, not a precise sound-effects classification. Previo
 - 2026-10-02: User authorized implementation, then a progress commit, then native integration/local Creator verification/video.
 - 2026-10-02: User approved simplifying to Search → Preview → Add with saved sounds/basic filters, removing reports/saved searches/JSON import-export/advanced insertion settings, restricting formats and fixing controls/navigation/focus styling.
 - 2026-10-08: User requested replacing the custom type snapshot with LottieFiles' official npm release.
+
+
+## Marketplace distribution
+
+- Publish Openverse SFX under Karthikeyan Ranasthala's personal publisher profile on Creator Extensions.
+- Initial release: `1.0.0`; retain the existing stable plugin ID for storage and attribution scope.
+- Release ZIP contains the manifest, production sandbox script, bundled client UI and third-party dependency notices.
+- Listing uses Productivity (no Audio category in the current portal), audio/search tags, both required icon formats and real Creator verification screenshots. Include documentation, repository and issue-support links.
+- Public copy must explain asset-specific licenses, supported imports and size limits, anonymous Openverse/provider requests, local bookmarks, layer attribution and import availability limits.
+- Record the portal's actual review/publication status and URL after submission.
+
+- 2026-10-08 distribution status: version `1.0.0` approved and published. [Public marketplace listing](https://extensions.lottiefiles.com/plugin/karthikeyan-ranasthala/openverse-sfx). [Publisher release dashboard](https://extensions.lottiefiles.com/publisher/plugins/6275f427-b675-452b-be37-ee2839d5163b?publisherId=01452372-3dd9-4c4e-962d-428d539fd580).
+- Marketplace descriptions, release notes and changelogs describe user capabilities and meaningful limitations. Omit npm package names, type versions, internal API names and development verification details; keep those in developer documentation. Licensing, formats, privacy and browser-local persistence remain useful to users.
+- 2026-10-08 copy correction: revised marketplace descriptions are saved. Revised release notes/changelog are prepared locally, but the already-submitted release exposes no editing control during manual review.
+- Rechecked after approval: listing descriptions remain editable and the public page displays the revised copy. Approved release notes/changelog remain read-only in the current portal; the local replacement copy is still pending an available editing path.
+
+## Open-source distribution
+
+- The public repository's plugin code uses the MIT license, with separate audio and third-party dependency licensing.
+- README leads with the published extension and user workflow. Contributor setup, architecture and host integration details live in developer documentation.
+- Include contribution guidance, a feature-focused changelog, data/privacy notes, issue/PR templates and matching package license/repository/homepage metadata.
+- GitHub description, homepage and topics should make the plugin and its published extension easy to find.
