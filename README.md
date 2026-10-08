@@ -30,7 +30,7 @@ Anonymous requests and previews run in React without keys, auth or a backend. A 
 
 The sandbox bridge performs native audio import, attribution, storage and public link opening. Creator downloads the audio URL. MP3/WAV/M4A/FLAC/OGG are supported up to 20 MB; search requests are limited to these formats by default. Providers may block access or require accounts for originals. Clipboard fallback supplies selectable text.
 
-Native Add requires the supplied Creator audio API branch at revision `d47ed7a45`. Its unmodified public declarations are pinned in `vendor/creator-api-types` until published. Older hosts retain discovery. Keep the plugin manifest ID stable. Native import/configuration can require multiple Undo steps because the API has no history transaction.
+Native Add requires a Creator host with audio API support. The plugin uses the official `@lottiefiles/creator-api-types` npm release, pinned to `1.2.0`; no vendored declarations are needed. Older hosts retain discovery. Keep the plugin manifest ID stable. Native import/configuration can require multiple Undo steps because the API has no history transaction.
 
 ## Verification and build
 
@@ -42,8 +42,10 @@ npm run build
 
 Production output: `dist/ui.html`, `dist/plugin.js` and `dist/manifest.json`. Build, lint and 21 tests passed. Live local Creator verification covers supported-format search, home navigation, select/focus styling, preview, simplified import, native playback, attribution and saved-sound restoration.
 
+The official npm types migration was also verified in production Creator on 2026-10-08: live search/filter/home navigation, preview, native import at the playhead, scene extension, playback, attribution and saved-sound restoration after a plugin reload. See [the imported layer](docs/screenshots/creator-official-types-import.jpg), [layer attribution](docs/screenshots/creator-official-types-attribution.jpg) and [restored saved sound](docs/screenshots/creator-official-types-saved.jpg).
+
 [Watch the updated simplified flow](docs/videos/openverse-simplified-flow.mp4) (silent). [View the plugin](docs/screenshots/creator-simplified-plugin.jpg) or [the smaller Add dialog](docs/screenshots/creator-simple-add.jpg). The earlier [audio API walkthrough](docs/videos/openverse-creator-audio-flow.mp4) shows the previous expanded interface and native editing checks.
 
-Local Creator runs at `http://127.0.0.1:3000/` using `/private/tmp/openverse-creator-audio-verify.mts` to expose its development loader. That temporary config changes no audio implementation and is unnecessary when the loader is already enabled. The supplied Creator worktree remains unchanged.
+The earlier audio API walkthrough used a local Creator worktree and a temporary configuration to expose its development loader. Current verification uses production Creator's Develop loader; no Creator checkout or host override is required.
 
 `PRD.MD` records current product scope. `WORKLOG.MD` records decisions, changes and verification history.

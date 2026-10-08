@@ -238,3 +238,29 @@ Use the documented Freesound-focused plugin layout for the UI implementation whe
 - User requested a new public repository named `creator-plugin-openverse-sfx` and confirmed `KarthikeyanRanasthala` as the owner.
 - Publication target: `https://github.com/KarthikeyanRanasthala/creator-plugin-openverse-sfx`, with `origin` configured for the existing repository and `main` carrying the committed implementation, documentation and verification artifacts.
 - This publication checkpoint makes no runtime or product changes.
+
+## 2026-10-08 — Official Creator API types from npm
+
+- User requested replacing the temporary custom type snapshot with LottieFiles' published npm package. Confirmed the latest registry release is `@lottiefiles/creator-api-types@1.2.0`; its changelog explicitly adds audio APIs.
+- Installed and pinned `1.2.0` as a dev dependency. The lockfile now records the registry tarball and integrity hash instead of a local package link. No other dependency versions changed.
+- Compared the published declarations with our snapshot: the only differences in the imported declaration file are audio URI documentation and the unused null-layer child type narrowing to `TransformableLayer`. Audio import, asset/layer properties, duration and change-event types remain compatible; no runtime changes were needed.
+- Removed all five files in `vendor/creator-api-types` and the obsolete ESLint vendor exclusion. Updated README/PRD to describe the official package and an audio-capable host rather than requiring the supplied development branch.
+- Validation: `npm ls @lottiefiles/creator-api-types` resolves `1.2.0`; explicit TypeScript check, production build, ESLint and all 21 tests pass. Native bridge tests cover import configuration/cleanup/concurrency, attribution and storage. This change only replaces compile-time declarations; no new live Creator flow was recorded.
+
+## 2026-10-08 — Live Creator flow with official npm types
+
+- User requested a live browser check after the type-package migration. Opened `https://creator.lottiefiles.com/` in a fresh tab and used its Develop loader to run this workspace's plugin at `http://127.0.0.1:5173`. The earlier audio API worktree and temporary config are no longer present; this verification uses production Creator without a host override or mocks.
+- Confirmed the installed dependency is the official `@lottiefiles/creator-api-types@1.2.0`. The loopback dev server was started with network permission after the sandbox rejected listening on port 5173.
+- Live Freesound whoosh search: 240 results across the five supported formats; selecting MP3 returned 163. Returning home restored ideas and cleared query/filters while retaining Freesound. The format dialog offered only MP3/WAV/M4A/FLAC/OGG.
+- Previewed “Deep Whoosh #1”: the real audio element completed at 3.155918 seconds, with `ended: true`, ready state 4 and no media error. Bookmarked the sound through Creator storage.
+- Set Creator's playhead to 2 seconds and imported the available 68 KB MP3 with scene extension selected. Native Properties showed the new audio layer, 100% volume and mute off. The layer begins at the 2-second mark; scene duration changed from 5 seconds to `00:05:04` at 30 fps. The available-file picker also listed the 822 KB WAV; this flow imported the MP3.
+- Native scene playback advanced and its audio meter reported −47.3 dBFS, confirming a nonzero signal from the imported clip. Stopped playback after the check.
+- Selected-layer attribution showed Kinoton, “Deep Whoosh #1”, CC0 1.0 and the original/license links. Reloaded the plugin: the bookmarked sound restored in Saved. Deselecting the layer removed its attribution action; re-selecting it restored the same stored attribution, which opened successfully again.
+- Verified the live iframe is 400 × 640. The inspected browser console error log was empty. No implementation changes or new live-flow video were needed; saved three screenshots: `creator-official-types-import.jpg`, `creator-official-types-attribution.jpg` and `creator-official-types-saved.jpg` under `docs/screenshots`.
+- Updated README/PRD with this production-host evidence. Left the test scene and dev server available for review.
+
+## 2026-10-08 — Commit and push checkpoint
+
+- User requested committing and pushing the completed npm types migration, documentation and live verification screenshots to `origin/main`.
+- Reviewed the full change scope and confirmed `git diff --check` passes. Existing validation includes TypeScript, production build, ESLint, all 21 tests and the successful production Creator flow recorded above.
+- Clarified in README that the earlier local Creator setup was historical; the current verification requires no external checkout or host override.

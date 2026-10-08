@@ -1,7 +1,7 @@
 # Openverse Sounds — Product Requirements
 
-Status: simplified plugin implemented and verified in local Creator.
-Created: 2026-10-01. Last updated: 2026-10-02.
+Status: simplified plugin implemented; official npm types migration verified in production Creator.
+Created: 2026-10-01. Last updated: 2026-10-08.
 
 ## Product goal
 
@@ -16,7 +16,7 @@ The user approved the reduced scope on 2026-10-02: Search → Preview → Add, s
 - Freesound by default, with All sources and other providers accessible.
 - Search only formats Creator supports: MP3, WAV, M4A, FLAC and OGG. An empty format selection requests all five; unsupported custom extensions are rejected.
 - Search, waveform previews, basic filters, saved sounds, source/license information and native Add to scene.
-- Native audio integration uses the supplied Creator audio API branch; the earlier placeholder-only restriction was superseded by explicit authorization.
+- Native audio integration uses the official `@lottiefiles/creator-api-types` npm release, pinned to `1.2.0`. The earlier placeholder-only restriction was superseded by explicit authorization.
 - Consistent rounded selects, chevron spacing and no focus rings, as requested. Preserve keyboard activation, labels and dialog keyboard controls.
 - A visible home action returns to sound ideas from results, details or Saved. Clear the query and filters while retaining the chosen source; ignore late search responses after returning home.
 - Keep the footer to “Powered by Openverse”; omit the Creator connection status text.
@@ -51,7 +51,7 @@ The API client and sandbox retain tested internal contract handling. Existing sa
 
 ## Audio import contract
 
-Reference: `/Users/karthik/workspace/orca-worktrees/creator/feature-cpl-450-plugins-api-audio`, inspected at revision `d47ed7a45`.
+Type contract: official [`@lottiefiles/creator-api-types`](https://www.npmjs.com/package/@lottiefiles/creator-api-types) version `1.2.0`, including audio assets, layers, imports and change events. The original runtime verification used `/Users/karthik/workspace/orca-worktrees/creator/feature-cpl-450-plugins-api-audio` at revision `d47ed7a45`.
 
 - `scene.import({ type: "AUDIO", url })` imports supported anonymous, CORS-accessible files, maximum 20 MB. Creator performs the download; the sandbox does not fetch.
 - Use decoded file duration and scene FPS for timing. Capture scene/playhead before import and reject a changed scene or frame rate while downloading.
@@ -83,6 +83,10 @@ Freesound is a starting pool, not a precise sound-effects classification. Previo
 
 ## Verification
 
+- 2026-10-08: Official npm types `1.2.0` resolve without the local snapshot. Type-checking, production build, ESLint and all 21 tests pass after the dependency migration; no runtime code changes were required.
+- 2026-10-08: Live flow passed at `https://creator.lottiefiles.com/` using the local plugin dev server and official npm types. Whoosh search returned 240 results; MP3 filtering returned 163. Home navigation cleared query/filters, and preview completed the 3.16-second file without a media error.
+- Native import added “Deep Whoosh #1” at the 2.00-second playhead, with 100% volume and mute off. Opt-in extension changed the scene from 5 seconds to 5 seconds 4 frames at 30 fps. Scene playback advanced and the native audio meter reported a nonzero signal (observed −47.3 dBFS).
+- The saved sound restored after a plugin reload. Stored layer attribution survived reload, deselection and re-selection. The live iframe measured 400 × 640; the inspected browser error log was empty. Evidence: `docs/screenshots/creator-official-types-import.jpg`, `creator-official-types-attribution.jpg` and `creator-official-types-saved.jpg`.
 - Production build, ESLint and 21 tests pass. The new format-policy test covers default inclusion of all five supported formats and rejection of OPUS/WEBM/OGA/MID/AIFF.
 - Actual local Creator iframe measures 400 × 640 with scroll width 400.
 - Computed select styles: 6 px radius; source padding-right 24 px, mode/sort 27 px, Add fields 30 px with chevron 10 px from the right. Native appearance disabled for consistent rendering.
@@ -98,8 +102,10 @@ Freesound is a starting pool, not a precise sound-effects classification. Previo
 
 - Supplied OpenAPI: `/Users/karthik/Downloads/Openverse API (v1).yaml`, version `909aa41ddf2115a69a447198b3f49121481e0c6b (v1)`.
 - Supplied Creator worktree: public API/types, `lib/audio-format.ts`, import validation and client-storage proxy.
+- Official npm package: `@lottiefiles/creator-api-types@1.2.0`, replacing the temporary vendored declarations on 2026-10-08.
 - [Openverse search help](https://openverse.org/search-help).
 - [Adobe Stock audio in Premiere](https://helpx.adobe.com/premiere/desktop/add-audio-effects/use-adobe-stock-audio/use-adobe-stock-audio-in-your-project.html) provides a reference for finding and previewing assets in an editor. The reduced scope here is a product decision, not a claim that all audio plugins use identical controls.
 - 2026-10-01: User confirmed anonymous access, client-only architecture, dark theme, discussion-first planning, Freesound focus and plugin interaction.
 - 2026-10-02: User authorized implementation, then a progress commit, then native integration/local Creator verification/video.
 - 2026-10-02: User approved simplifying to Search → Preview → Add with saved sounds/basic filters, removing reports/saved searches/JSON import-export/advanced insertion settings, restricting formats and fixing controls/navigation/focus styling.
+- 2026-10-08: User requested replacing the custom type snapshot with LottieFiles' official npm release.
